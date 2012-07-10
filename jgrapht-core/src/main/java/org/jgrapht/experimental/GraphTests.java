@@ -113,6 +113,14 @@ public final class GraphTests<V, E>
         }
         return true;
     }
+
+    public static void main(String[] args) {
+        Graph g = GraphReader.generateIntGraph(args[0]);
+        System.out.println(isComplete(g));
+        System.out.println(isConnected(g));
+        System.out.println(isTree(g));
+        System.out.println(isBipartite(g));
+    }
 }
 
 // End GraphTests.java

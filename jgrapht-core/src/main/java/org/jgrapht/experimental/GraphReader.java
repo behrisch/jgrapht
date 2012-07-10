@@ -45,6 +45,7 @@ import java.util.*;
 
 import org.jgrapht.*;
 import org.jgrapht.generate.*;
+import org.jgrapht.graph.*;
 
 
 public class GraphReader<V, E>
@@ -90,6 +91,15 @@ public class GraphReader<V, E>
         throws IOException
     {
         this(input, false, 1);
+    }
+
+    /**
+     * Construct a new GraphReader.
+     */
+    public GraphReader(final String filename)
+        throws IOException
+    {
+        this(new FileReader(filename));
     }
 
     /**
@@ -175,6 +185,23 @@ public class GraphReader<V, E>
             }
             cols = skipComments();
         }
+    }
+
+    private static final class IntVertexFactory implements VertexFactory<Integer> {
+        private int _idx;
+        public Integer createVertex() {
+            return _idx++;
+        }
+    }
+
+    public static Graph<Integer, DefaultEdge> generateIntGraph(String filename) {
+        Graph<Integer, DefaultEdge> result = new SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class);
+        try {
+            new GraphReader<Integer, DefaultEdge>(filename).generateGraph(result, new IntVertexFactory(), null);
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+        return result;
     }
 }
 
