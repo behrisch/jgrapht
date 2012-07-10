@@ -14,7 +14,7 @@ import org.jgrapht.experimental.alg.*;
  */
 public class BrownBacktrackColoring<V, E>
     extends IntArrayGraphAlgorithm<V, E>
-    implements ExactAlgorithm<Integer, V>
+    implements ExactAlgorithm<Integer, Map<V, Integer>>
 {
     //~ Instance fields --------------------------------------------------------
 
@@ -75,7 +75,7 @@ public class BrownBacktrackColoring<V, E>
     /* (non-Javadoc)
      * @see org.jgrapht.experimental.alg.ExactAlgorithm#getResult()
      */
-    public Integer getResult(Map<V, Object> additionalData)
+    public Integer getResult(Map<V, Integer> additionalData)
     {
         _chi = _neighbors.length;
         _color = new int[_neighbors.length];

@@ -39,56 +39,58 @@
  */
 package org.jgrapht.experimental.alg;
 
-import java.util.*;
-
 import org.jgrapht.*;
-
 
 /**
  * @author Michael Behrisch
  */
-public abstract class IntArrayGraphAlgorithm<V, E>
+public abstract class IntArrayApproxAlgorithm<V, E, ResultType, T>
+    extends IntArrayGraphAlgorithm<V, E>
+    implements ApproximationAlgorithm<ResultType, T>
 {
     //~ Instance fields --------------------------------------------------------
 
-    protected final List<V> _vertices;
-    protected final int [][] _neighbors;
-    protected final Map<V, Integer> _vertexToPos;
+    protected ResultType _cachedUpperBound;
+    protected ResultType _cachedLowerBound;
 
     //~ Constructors -----------------------------------------------------------
 
     /**
      * @param g
      */
-    public IntArrayGraphAlgorithm(final Graph<V, E> g)
+    public IntArrayApproxAlgorithm(final Graph<V, E> g)
     {
-        final int numVertices = g.vertexSet().size();
-        _vertices = new ArrayList<V>(numVertices);
-        _neighbors = new int[numVertices][];
-        _vertexToPos = new HashMap<V, Integer>(numVertices);
-        for (V vertex : g.vertexSet()) {
-            _neighbors[_vertices.size()] = new int[g.edgesOf(vertex).size()];
-            _vertexToPos.put(vertex, _vertices.size());
-            _vertices.add(vertex);
-        }
-        for (int i = 0; i < numVertices; i++) {
-            int nbIndex = 0;
-            final V vertex = _vertices.get(i);
-            for (E e : g.edgesOf(vertex)) {
-                _neighbors[i][nbIndex++] =
-                    _vertexToPos.get(Graphs.getOppositeVertex(g, e, vertex));
-            }
-        }
+        super(g);
     }
 
     /**
      * @param other
      */
-    protected IntArrayGraphAlgorithm(final IntArrayGraphAlgorithm<V, E> other)
+    protected IntArrayApproxAlgorithm(final IntArrayGraphAlgorithm<V, E> other)
     {
-        _vertices = other._vertices;
-        _neighbors = other._neighbors;
-        _vertexToPos = other._vertexToPos;
+        super(other);
+    }
+
+    protected abstract ResultType internalUpperBound(T optionalData);
+
+    protected abstract ResultType internalLowerBound(T optionalData);
+
+    public final ResultType getUpperBound(T optionalData) {
+        if (_cachedUpperBound == null || optionalData != null) {
+            _cachedUpperBound = internalUpperBound(optionalData);
+        }
+        return _cachedUpperBound;
+    }
+
+    public final ResultType getLowerBound(T optionalData) {
+        if (_cachedLowerBound == null || optionalData != null) {
+            _cachedLowerBound = internalUpperBound(optionalData);
+        }
+        return _cachedLowerBound;
+    }
+
+    public final boolean isExact() {
+        return getUpperBound(null) == getLowerBound(null);
     }
 }
 

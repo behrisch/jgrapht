@@ -1,3 +1,42 @@
+/* ==========================================
+ * JGraphT : a free Java graph-theory library
+ * ==========================================
+ *
+ * Project Info:  http://jgrapht.sourceforge.net/
+ * Project Creator:  Barak Naveh (http://sourceforge.net/users/barak_naveh)
+ *
+ * (C) Copyright 2003-2008, by Barak Naveh and Contributors.
+ *
+ * This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+ * License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation,
+ * Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+ */
+/* -------------------
+ * GreedyColoringjava
+ * -------------------
+ * (C) Copyright 2010-2010, by Michael Behrisch and Contributors.
+ *
+ * Original Author:  Michael Behrisch
+ * Contributor(s):   -
+ *
+ * $Id: GreedyColoring.java 714 2010-06-13 01:19:56Z perfecthash $
+ *
+ * Changes
+ * -------
+ * 24-Dec-2008 : Initial revision (AN);
+ *
+ */
 package org.jgrapht.experimental.alg.color;
 
 import java.util.*;
@@ -6,9 +45,11 @@ import org.jgrapht.*;
 import org.jgrapht.experimental.alg.*;
 
 
+/**
+ * @author Michael Behrisch
+ */
 public class GreedyColoring<V, E>
-    extends IntArrayGraphAlgorithm<V, E>
-    implements ApproximationAlgorithm<Integer, V>
+    extends IntArrayApproxAlgorithm<V, E, Integer, Map<V, Integer>>
 {
     //~ Static fields/initializers ---------------------------------------------
 
@@ -154,12 +195,12 @@ public class GreedyColoring<V, E>
         return buckets;
     }
 
-    public Integer getLowerBound(Map<V, Object> optionalData)
+    protected Integer internalLowerBound(Map<V, Integer> optionalData)
     {
-        return 0;
+        return new GreedyClique<V, E>(this).getLowerBound(null);
     }
 
-    public Integer getUpperBound(Map<V, Object> optionalData)
+    protected Integer internalUpperBound(Map<V, Integer> optionalData)
     {
         switch (_order) {
         case BEST_ORDER:
@@ -174,11 +215,6 @@ public class GreedyColoring<V, E>
             return color(largestSaturationFirstOrder());
         }
         return _neighbors.length;
-    }
-
-    public boolean isExact()
-    {
-        return false;
     }
 }
 
