@@ -5,7 +5,7 @@
  * Project Info:  http://jgrapht.sourceforge.net/
  * Project Creator:  Barak Naveh (http://sourceforge.net/users/barak_naveh)
  *
- * (C) Copyright 2003-2008, by Barak Naveh and Contributors.
+ * (C) Copyright 2003-2012, by Barak Naveh and Contributors.
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -23,14 +23,14 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 /* -------------------
- * GreedyColoringjava
+ * GreedyClique.java
  * -------------------
- * (C) Copyright 2010-2010, by Michael Behrisch and Contributors.
+ * (C) Copyright 2010-2012, by Michael Behrisch and Contributors.
  *
  * Original Author:  Michael Behrisch
  * Contributor(s):   -
  *
- * $Id: GraphReaderTest.java 711 2010-05-21 21:18:52Z behrisch $
+ * $Id$
  *
  * Changes
  * -------
@@ -42,6 +42,7 @@ package org.jgrapht.experimental.alg;
 import java.util.*;
 
 import org.jgrapht.*;
+import org.jgrapht.experimental.GraphReader;
 
 
 /**
@@ -68,40 +69,62 @@ public class GreedyClique<V, E>
 
     //~ Methods ----------------------------------------------------------------
 
+    /**
+     * Looks for a clique greedily starting at the first vertex in the array.
+     *
+     * @param optionalData
+     */
     protected Integer internalLowerBound(Set<V> optionalData)
     {
-        int maxClique = 1;
+        int maxClique = 0;
+        BitSet maxSet = new BitSet(_neighbors.length);
         BitSet members = new BitSet(_neighbors.length);
         BitSet test = new BitSet(_neighbors.length);
-        int size = 1;
 
         for (int i = 0; i < _neighbors.length; i++) {
             members.clear();
             members.set(i);
-            size = 1;
+            int size = 1;
             for (int j = 0; j < _neighbors[i].length; j++) {
                 if (_neighbors[i][j] > i) {
                     members.set(_neighbors[i][j]);
                     size++;
                 }
             }
-            if (size > maxClique) {
-                int next = members.nextSetBit(i+1);
-                while (next != -1) {
-                    test.clear();
-                    for (int j = 0; j < _neighbors[next].length; j++) {
-                        if (_neighbors[next][j] >= i) {
-                            test.set(_neighbors[next][j]);
-                        }
+            for (int next = members.nextSetBit(i+1);
+                 next != -1 && size > maxClique;
+                 next = members.nextSetBit(next+1)) {
+                test.clear();
+                test.set(next);
+                for (int j = 0; j < _neighbors[next].length; j++) {
+                    if (_neighbors[next][j] >= i) {
+                        test.set(_neighbors[next][j]);
                     }
-                    members.and(test);
-                    next = members.nextSetBit(next+1);
                 }
+                members.and(test);
+                size = members.cardinality();
+            }
+            if (size > maxClique) {
+                maxClique = size;
+                maxSet.clear();
+                maxSet.or(members);
+            }
+        }
+        if (optionalData != null) {
+            for (int next = maxSet.nextSetBit(0); next != -1;
+             next = maxSet.nextSetBit(next+1)) {
+                optionalData.add(_vertices.get(next));
             }
         }
         return maxClique;
     }
 
+    /**
+     * Employs the fact that for a clique of size k one needs
+     * at least k vertices of degree at least k-1.
+     *
+     * @param optionalData
+     */
     protected Integer internalUpperBound(Set<V> optionalData)
     {
         final int [] degrees = new int[_neighbors.length];
@@ -110,14 +133,15 @@ public class GreedyClique<V, E>
         }
         int numHighDegree = 0;
         int c = _neighbors.length - 1;
-        for (; c >= 0; c--) {
+        for (; c >= numHighDegree; c--) {
             numHighDegree += degrees[c];
-            if (numHighDegree > c) {
-                break;
-            }
         }
-        return c+1;
+        return c+2; //one extra to compensate for the last loop decrement
+    }
+
+    public static void main(String[] args) {
+        Graph g = GraphReader.generateIntGraph(args[0]);
+        System.out.println(new GreedyClique(g).getLowerBound(null));
+        System.out.println(new GreedyClique(g).getUpperBound(null));
     }
 }
-
-// End GreedyColoring.java
