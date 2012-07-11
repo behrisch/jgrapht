@@ -6,6 +6,7 @@ package org.jgrapht.experimental.alg.color;
 import java.util.*;
 
 import org.jgrapht.*;
+import org.jgrapht.experimental.GraphReader;
 import org.jgrapht.experimental.alg.*;
 
 
@@ -94,6 +95,9 @@ public class BrownBacktrackColoring<V, E>
         }
         return _chi;
     }
-}
 
-// End BrownBacktrackColoring.java
+    public static void main(String[] args) {
+        Graph g = GraphReader.generateIntGraph(args[0]);
+        System.out.println(new BrownBacktrackColoring(g).getResult(null));
+    }
+}

@@ -5,7 +5,7 @@
  * Project Info:  http://jgrapht.sourceforge.net/
  * Project Creator:  Barak Naveh (http://sourceforge.net/users/barak_naveh)
  *
- * (C) Copyright 2003-2008, by Barak Naveh and Contributors.
+ * (C) Copyright 2003-2012, by Barak Naveh and Contributors.
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -23,14 +23,14 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 /* -------------------
- * GreedyColoringjava
+ * GreedyColoring.java
  * -------------------
- * (C) Copyright 2010-2010, by Michael Behrisch and Contributors.
+ * (C) Copyright 2010-2012, by Michael Behrisch and Contributors.
  *
  * Original Author:  Michael Behrisch
  * Contributor(s):   -
  *
- * $Id: GreedyColoring.java 714 2010-06-13 01:19:56Z perfecthash $
+ * $Id$
  *
  * Changes
  * -------
@@ -42,6 +42,7 @@ package org.jgrapht.experimental.alg.color;
 import java.util.*;
 
 import org.jgrapht.*;
+import org.jgrapht.experimental.GraphReader;
 import org.jgrapht.experimental.alg.*;
 
 
@@ -216,6 +217,10 @@ public class GreedyColoring<V, E>
         }
         return _neighbors.length;
     }
-}
 
-// End GreedyColoring.java
+    public static void main(String[] args) {
+        Graph g = GraphReader.generateIntGraph(args[0]);
+        System.out.println(new GreedyColoring(g).getLowerBound(null));
+        System.out.println(new GreedyColoring(g).getUpperBound(null));
+    }
+}

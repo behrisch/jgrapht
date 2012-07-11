@@ -42,6 +42,7 @@ package org.jgrapht.experimental.alg;
 import java.util.*;
 
 import org.jgrapht.*;
+import org.jgrapht.experimental.GraphReader;
 
 
 /**
@@ -245,5 +246,11 @@ public class MinBisection<V, E>
             }
         }
         return _upperBound;
+    }
+
+    public static void main(String[] args) {
+        Graph g = GraphReader.generateIntGraph(args[0]);
+        System.out.println(new MinBisection(g).getLowerBound(null));
+        System.out.println(new MinBisection(g).getUpperBound(null));
     }
 }

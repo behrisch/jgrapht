@@ -42,6 +42,7 @@ package org.jgrapht.experimental.alg;
 import java.util.*;
 
 import org.jgrapht.*;
+import org.jgrapht.experimental.GraphReader;
 
 public class BipartiteMatchingHopcroftKarp<V, E>
     extends IntArrayGraphAlgorithm<V, E>
@@ -224,5 +225,10 @@ public class BipartiteMatchingHopcroftKarp<V, E>
             return result/2;
         }
         return -1;
+    }
+
+    public static void main(String[] args) {
+        Graph g = GraphReader.generateIntGraph(args[0]);
+        System.out.println(new BipartiteMatchingHopcroftKarp(g).getResult(null));
     }
 }

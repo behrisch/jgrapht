@@ -42,6 +42,7 @@ package org.jgrapht.experimental.alg;
 import java.util.*;
 
 import org.jgrapht.*;
+import org.jgrapht.experimental.GraphReader;
 
 
 /**
@@ -95,7 +96,7 @@ public class EdgeConnectivity<V, E>
         }
         return result;
     }
-    
+
     public Integer getResult(List<Integer> optionalData) {
         final List<List<Integer>> nb = new ArrayList<List<Integer>>(_neighbors.length);
         final int[] ident = new int[_neighbors.length];
@@ -121,5 +122,10 @@ public class EdgeConnectivity<V, E>
             optionalData.add(_upperBound);
         }
         return lambda;
+    }
+
+    public static void main(String[] args) {
+        Graph g = GraphReader.generateIntGraph(args[0]);
+        System.out.println(new EdgeConnectivity(g).getResult(null));
     }
 }
