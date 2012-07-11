@@ -84,7 +84,7 @@ public abstract class IntArrayApproxAlgorithm<V, E, ResultType, T>
 
     public final ResultType getLowerBound(T optionalData) {
         if (_cachedLowerBound == null || optionalData != null) {
-            _cachedLowerBound = internalUpperBound(optionalData);
+            _cachedLowerBound = internalLowerBound(optionalData);
         }
         return _cachedLowerBound;
     }
