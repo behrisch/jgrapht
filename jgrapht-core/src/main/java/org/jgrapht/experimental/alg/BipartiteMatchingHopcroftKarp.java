@@ -5,7 +5,7 @@
  * Project Info:  http://jgrapht.sourceforge.net/
  * Project Creator:  Barak Naveh (http://sourceforge.net/users/barak_naveh)
  *
- * (C) Copyright 2003-2008, by Barak Naveh and Contributors.
+ * (C) Copyright 2003-2012, by Barak Naveh and Contributors.
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -23,14 +23,14 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
  */
 /* -------------------
- * GreedyColoringjava
+ * BipartiteMatchingHopcroftKarp.java
  * -------------------
- * (C) Copyright 2010-2010, by Michael Behrisch and Contributors.
+ * (C) Copyright 2010-2012, by Michael Behrisch and Contributors.
  *
  * Original Author:  Michael Behrisch
  * Contributor(s):   -
  *
- * $Id: GraphReaderTest.java 711 2010-05-21 21:18:52Z behrisch $
+ * $Id$
  *
  * Changes
  * -------
@@ -119,6 +119,7 @@ public class BipartiteMatchingHopcroftKarp<V, E>
         LinkedList<Integer> queue = new LinkedList<Integer>();
         BitSet odd = new BitSet(_neighbors.length);
 
+        unknown.set(0, _neighbors.length);
         queue.add(0);
         int card = 0;
 
@@ -128,12 +129,12 @@ public class BipartiteMatchingHopcroftKarp<V, E>
             }
 
             int v = queue.removeFirst();
-            unknown.set(v, false);
+            unknown.clear(v);
 
             for (int n : _neighbors[v]) {
                 if (unknown.get(n)) {
                     queue.add(n);
-                    if (!odd.get(v)) {
+                    if (!odd.get(v) && !odd.get(n)) {
                         odd.set(n);
                         card++;
                     }
@@ -148,7 +149,7 @@ public class BipartiteMatchingHopcroftKarp<V, E>
             if (odd.get(i)) {
                 result[0][idx0++] = i;
             } else {
-                result[1][idx1++] = i;                
+                result[1][idx1++] = i;
             }
         }
         return result;
@@ -159,6 +160,10 @@ public class BipartiteMatchingHopcroftKarp<V, E>
      */
     public Integer getResult(Map<V, V> additionalData) {
 
+        if (_neighbors.length < 2) {
+            return 0;
+        }
+
         final int[][] part = getBipartition();
 
         if (part != null) {
@@ -166,7 +171,7 @@ public class BipartiteMatchingHopcroftKarp<V, E>
             final List<LinkedList<Integer>> vor = new ArrayList<LinkedList<Integer>>(_neighbors.length);
             final List<Integer> term = new ArrayList<Integer>();
             long k;
-            
+
             for (int i = 0; i < match.length; i++) {
                 match[i] = -1;
                 vor.add(null);
