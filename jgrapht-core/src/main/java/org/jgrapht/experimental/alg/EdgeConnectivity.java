@@ -65,8 +65,9 @@ public class EdgeConnectivity<V, E>
         super(other);
     }
 
-    private int maxAdjOrder(List<List<Integer>> nb, int size, int[] ident, int[] order, int[] mult) {
-        final SortedBuckets nodeHeap = new SortedBuckets(_neighbors.length);
+    private int maxAdjOrder(List<List<Integer>> nb, int maxDegree,
+                            int[] ident, int[] order, int[] mult) {
+        final SortedBuckets nodeHeap = new SortedBuckets(_neighbors.length, maxDegree);
         for (int i = 0; i < _neighbors.length; i++) {
             if (ident[i] == i) {
                 nodeHeap.add(i, 0);
@@ -104,9 +105,13 @@ public class EdgeConnectivity<V, E>
         final int[] mult = new int[_neighbors.length];
         _upperBound = _neighbors.length - 1;
         int lambda = _neighbors.length - 1;
+        int maxDegree = 0;
         for (int i = 0; i < _neighbors.length; i++) {
             if (_neighbors[i].length < lambda) {
                 lambda = _neighbors[i].length;
+            }
+            if (_neighbors[i].length > maxDegree) {
+                maxDegree = _neighbors[i].length;
             }
             List<Integer> nbi = new ArrayList<Integer>(_neighbors[i].length);
             for (int j = 0; j < _neighbors[i].length; j++) {
@@ -117,8 +122,12 @@ public class EdgeConnectivity<V, E>
             mult[i] = 1;
         }
         for (int k = _neighbors.length; k > 1; k--) {
-            lambda = Math.min(maxAdjOrder(nb, k, ident, order, mult), lambda);
+            lambda = Math.min(maxAdjOrder(nb, maxDegree, ident, order, mult),
+                              lambda);
             nb.get(order[k-2]).addAll(nb.get(order[k-1]));
+            if (nb.get(order[k-2]).size() > maxDegree) {
+                maxDegree = nb.get(order[k-2]).size();
+            }
             ident[order[k-1]] = ident[order[k-2]];
             mult[order[k-2]] += mult[order[k-1]];
         }

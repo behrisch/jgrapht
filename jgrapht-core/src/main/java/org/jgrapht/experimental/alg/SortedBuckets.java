@@ -61,9 +61,11 @@ public class SortedBuckets {
         _buckets = new int[capacity];
         _keys = new int[capacity];
         _positions = new int[capacity];
-        Arrays.fill(_positions, -1);
-        Arrays.fill(_buckets, -1); // just to ease debugging
         _borders = new int[maxKey+1];
+        Arrays.fill(_positions, -1);
+//        Arrays.fill(_buckets, -1); // uncomment to ease debugging
+//        Arrays.fill(_borders, -1); // uncomment to ease debugging
+        _borders[0] = 0;
         _maxKey = 0;
     }
 
@@ -87,7 +89,7 @@ public class SortedBuckets {
             _maxKey++;
         }
         _buckets[_borders[key]] = elem;
-        _positions[elem] = _buckets[_borders[key]];
+        _positions[elem] = _borders[key];
         _borders[key]++;
         return true;
     }
@@ -126,8 +128,9 @@ public class SortedBuckets {
     public int pop() {
         _borders[_maxKey]--;
         final int result = _buckets[_borders[_maxKey]];
-        _buckets[_borders[_maxKey]] = -1; // just to ease debugging
+//        _buckets[_borders[_maxKey]] = -1; // uncomment to ease debugging
         while (_maxKey > 0 && _borders[_maxKey] == _borders[_maxKey-1]) {
+//            _borders[_maxKey] = -1; // uncomment to ease debugging
             _maxKey--;
         }
         _positions[result] = -1;
