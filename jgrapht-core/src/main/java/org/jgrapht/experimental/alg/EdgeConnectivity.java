@@ -108,7 +108,11 @@ public class EdgeConnectivity<V, E>
             if (_neighbors[i].length < lambda) {
                 lambda = _neighbors[i].length;
             }
-            nb.add(new ArrayList<Integer>());
+            List<Integer> nbi = new ArrayList<Integer>(_neighbors[i].length);
+            for (int j = 0; j < _neighbors[i].length; j++) {
+                nbi.add(_neighbors[i][j]);
+            }
+            nb.add(nbi);
             ident[i] = i;
             mult[i] = 1;
         }
