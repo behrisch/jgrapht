@@ -195,7 +195,7 @@ public class RandomGraphGenerator<V, E>
          * must result in the generation of the same. But if the randomizer is
          * different, it should, usually, create different edge topology.
          *
-         * @param targetGraph - guranteed to start with zero edges.
+         * @param targetGraph - guaranteed to start with zero edges.
          * @param orderToVertexMap - key=Integer of vertex order . between zero
          * to numOfVertexes (exclusive). value = vertex from the graph. unique.
          * @param numberOfEdges - to create in the graph
@@ -213,7 +213,7 @@ public class RandomGraphGenerator<V, E>
          * vertexes in graph
          * <li>a Simple Graph, can have max of #V*(#V-1)/2 edges. etc
          *
-         * @param targetGraph guranteed to start with zero edges.
+         * @param targetGraph guaranteed to start with zero edges.
          * @param numberOfEdges
          */
         public boolean isNumberOfEdgesValid(
@@ -229,7 +229,7 @@ public class RandomGraphGenerator<V, E>
      * (like: self edge / multiple edges in unpermitted graph type) it will just
      * choose another and try again. Performance:
      * <li>when the number of possible edges becomes slim , this class will have
-     * a very poor performance , cause it will not use gready methods to choose
+     * a very poor performance , cause it will not use greedy methods to choose
      * them. for example : In simple graph , if #V = N (#x = number Of x) and we
      * want full mesh #edges= N*(N-1)/2 , the first added edges will do so
      * quickly (O(1) , the last will take O(N^2). So , do not use it in this
@@ -249,7 +249,6 @@ public class RandomGraphGenerator<V, E>
             int numberOfEdges,
             Random randomizer)
         {
-            int iterationsCounter = 0;
             int edgesCounter = 0;
             while (edgesCounter < numberOfEdges) {
                 // randomizer.nextInt(int n) return a number between zero
@@ -268,8 +267,6 @@ public class RandomGraphGenerator<V, E>
                 } catch (Exception e) {
                     // do nothing.just ignore the edge
                 }
-
-                iterationsCounter++;
             }
         }
 

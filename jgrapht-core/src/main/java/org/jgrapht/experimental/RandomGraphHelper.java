@@ -74,11 +74,10 @@ public final class RandomGraphHelper
     /**
      * @see GraphGenerator#generateGraph
      */
-    @SuppressWarnings("unchecked")
-    public static void addEdges(
-        Graph target,
-        List sourceVertices,
-        List destVertices,
+    public static <V,E> void addEdges(
+        Graph<V,E> target,
+        List<V> sourceVertices,
+        List<V> destVertices,
         int numEdges)
     {
         int sourceSize = sourceVertices.size();
@@ -106,17 +105,17 @@ public final class RandomGraphHelper
      *
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static Object [] addVertices(
-        Graph target,
-        VertexFactory vertexFactory,
+    public static <V,E> List<V> addVertices(
+        Graph<V,E> target,
+        VertexFactory<V> vertexFactory,
         int numVertices)
     {
-        Object [] vertices = new Object[numVertices];
+        List<V> vertices = new ArrayList<V>(numVertices);
 
         for (int i = 0; i < numVertices; ++i) {
-            vertices[i] = vertexFactory.createVertex();
-            target.addVertex(vertices[i]);
+            V v = vertexFactory.createVertex();
+            vertices.add(v);
+            target.addVertex(v);
         }
 
         return vertices;
