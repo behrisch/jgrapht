@@ -57,7 +57,7 @@ import org.jgrapht.generate.*;
  * @since Sep 13, 2004
  */
 public class PartiteRandomGraphGenerator<V, E>
-    implements GraphGenerator<V, E, Object[]>
+    implements GraphGenerator<V, E, List<V>>
 {
     //~ Instance fields --------------------------------------------------------
 
@@ -142,28 +142,19 @@ public class PartiteRandomGraphGenerator<V, E>
     public void generateGraph(
         Graph<V, E> target,
         VertexFactory<V> vertexFactory,
-        Map<String, Object[]> resultMap)
+        Map<String, List<V>> resultMap)
     {
-        Object [][] vertices = new Object[numVertices.length][];
+        List<List<V>> vertices = new ArrayList<List<V>>(numVertices.length);
 
         for (int i = 0; i < numVertices.length; i++) {
-            vertices[i] =
-                RandomGraphHelper.addVertices(
-                    target,
-                    vertexFactory,
-                    numVertices[i]);
-
+        	List<V> curNodes = RandomGraphHelper.addVertices(target, vertexFactory, numVertices[i]);
             if (resultMap != null) {
-                resultMap.put(Integer.toString(i), vertices[i]);
+                resultMap.put(Integer.toString(i), curNodes);
             }
-
-            for (int j = 0; j < i; j++) {
-                RandomGraphHelper.addEdges(
-                    target,
-                    Arrays.asList(vertices[i]),
-                    Arrays.asList(vertices[j]),
-                    numEdges);
+            for (List<V> others: vertices) {
+                RandomGraphHelper.addEdges(target, curNodes, others, numEdges);
             }
+            vertices.add(curNodes);
         }
     }
 }

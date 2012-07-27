@@ -55,8 +55,8 @@ import org.jgrapht.generate.*;
  * @author Michael Behrisch
  * @since Sep 13, 2004
  */
-public class UniformRandomGraphGenerator
-    implements GraphGenerator
+public class UniformRandomGraphGenerator<V,E>
+    implements GraphGenerator<V, E, List<V>>
 {
     //~ Instance fields --------------------------------------------------------
 
@@ -95,19 +95,19 @@ public class UniformRandomGraphGenerator
      * @see GraphGenerator#generateGraph
      */
     public void generateGraph(
-        Graph target,
-        VertexFactory vertexFactory,
-        Map resultMap)
+        Graph<V, E> target,
+        VertexFactory<V> vertexFactory,
+        Map<String, List<V>> resultMap)
     {
-        Object [] vertices =
+        List<V> vertices =
             RandomGraphHelper.addVertices(
                 target,
                 vertexFactory,
                 numVertices);
         RandomGraphHelper.addEdges(
             target,
-            Arrays.asList(vertices),
-            Arrays.asList(vertices),
+            vertices,
+            vertices,
             numEdges);
     }
 }
